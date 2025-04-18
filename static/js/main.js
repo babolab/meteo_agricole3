@@ -44,30 +44,47 @@ document.addEventListener('DOMContentLoaded', function() {
     let lastData = null;
     function updateCharts(data) {
         lastData = data;
+        
         // Température
-        const tempTrace = {
+        const tempTrace1 = {
             x: data.timestamps,
-            y: data.temperatures,
+            y: data.arpege.temperatures,
             type: 'scatter',
-            name: 'Température',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('tempChart', [tempTrace], {
+        const tempTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.temperatures,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('tempChart', [tempTrace1, tempTrace2], {
             title: 'Évolution de la température',
             yaxis: { title: 'Température (°C)' }
         });
 
         // Précipitations
-        const precipTrace = {
+        const precipTrace1 = {
             x: data.timestamps,
-            y: data.precipitation,
+            y: data.arpege.precipitation,
             type: 'bar',
-            name: 'Précipitations',
-            marker: { color: chartColor }
+            name: 'Arpège',
+            marker: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('precipChart', [precipTrace], {
+        const precipTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.precipitation,
+            type: 'bar',
+            name: 'ECMWF',
+            marker: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('precipChart', [precipTrace1, precipTrace2], {
             title: 'Précipitations',
             yaxis: { title: 'mm', range: [0, 20] }
         });
