@@ -11,11 +11,18 @@ app = Flask(__name__)
 weather_service = WeatherService()
 data_processor = DataProcessor()
 
+from flask import jsonify
+
 @app.route('/api/weather')
 def get_weather():
-    weather_data = weather_service.get_weather_data()
-    processed_data = data_processor.process_data(weather_data)
-    return processed_data
+    try:
+        weather_data = weather_service.get_weather_data()
+        processed_data = data_processor.process_data(weather_data)
+        print("Données météo récupérées:", processed_data)  # Debug log
+        return jsonify(processed_data)
+    except Exception as e:
+        print("Erreur lors de la récupération des données:", str(e))  # Debug log
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def index():

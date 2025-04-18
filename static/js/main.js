@@ -90,9 +90,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Chargement initial des données
     fetch('/api/weather')
-        .then(response => response.json())
-        .then(data => updateCharts(data))
-        .catch(error => console.error('Erreur lors du chargement des données:', error));
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log("Données reçues:", data);  // Debug log
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            updateCharts(data);
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des données:', error);
+            alert('Erreur lors du chargement des données. Veuillez rafraîchir la page.');
+        });
 
     // Mise à jour automatique toutes les 15 minutes
     setInterval(() => {
