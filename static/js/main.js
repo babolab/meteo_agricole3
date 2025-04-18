@@ -100,6 +100,76 @@ document.addEventListener('DOMContentLoaded', function() {
             yaxis: { title: '%', range: [0, 100] }
         });
 
+        // Pression atmosphérique
+        const pressureTrace = {
+            x: data.timestamps,
+            y: data.pressure,
+            type: 'scatter',
+            name: 'Pression',
+            line: { color: chartColor }
+        };
+        
+        Plotly.newPlot('pressureChart', [pressureTrace], {
+            title: 'Pression atmosphérique',
+            yaxis: { title: 'hPa' }
+        });
+
+        // Point de rosée
+        const dewpointTrace = {
+            x: data.timestamps,
+            y: data.dewpoint,
+            type: 'scatter',
+            name: 'Point de rosée',
+            line: { color: chartColor }
+        };
+        
+        Plotly.newPlot('dewpointChart', [dewpointTrace], {
+            title: 'Point de rosée',
+            yaxis: { title: '°C' }
+        });
+
+        // Radiation
+        const radiationTrace = {
+            x: data.timestamps,
+            y: data.radiation,
+            type: 'scatter',
+            name: 'Radiation',
+            line: { color: chartColor }
+        };
+        
+        Plotly.newPlot('radiationChart', [radiationTrace], {
+            title: 'Radiation solaire directe',
+            yaxis: { title: 'W/m²' }
+        });
+
+        // ETP
+        const etpTrace = {
+            x: data.timestamps,
+            y: data.etp,
+            type: 'scatter',
+            name: 'ETP',
+            line: { color: chartColor }
+        };
+        
+        Plotly.newPlot('etpChart', [etpTrace], {
+            title: 'Évapotranspiration potentielle',
+            yaxis: { title: 'mm' }
+        });
+
+        // VPD
+        const vpdTrace = {
+            x: data.timestamps,
+            y: data.vpd,
+            type: 'scatter',
+            name: 'VPD',
+            line: { color: chartColor }
+        };
+        
+        Plotly.newPlot('vpdChart', [vpdTrace], {
+            title: 'Déficit de pression de vapeur',
+            yaxis: { title: 'kPa' }
+        });
+
         // Mise à jour du tableau détaillé
         updateDetailedTable(data);
     }
@@ -113,7 +183,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <th>Température</th>
                     <th>Précipitations</th>
                     <th>Vent</th>
+                    <th>Direction</th>
                     <th>Humidité</th>
+                    <th>Pression</th>
+                    <th>Point de rosée</th>
+                    <th>Radiation</th>
+                    <th>ETP</th>
+                    <th>VPD</th>
+                    <th>Indice de confiance</th>
                 </tr>
             </thead>
             <tbody>
@@ -123,7 +200,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${data.temperatures[i]}°C</td>
                         <td>${data.precipitation[i]} mm</td>
                         <td>${data.wind_speed[i]} km/h</td>
+                        <td>${data.wind_direction[i]}</td>
                         <td>${data.humidity[i]}%</td>
+                        <td>${Math.round(data.pressure[i])} hPa</td>
+                        <td>${Math.round(data.dewpoint[i] * 10) / 10}°C</td>
+                        <td>${Math.round(data.radiation[i])} W/m²</td>
+                        <td>${Math.round(data.etp[i] * 10) / 10} mm</td>
+                        <td>${Math.round(data.vpd[i] * 100) / 100} kPa</td>
+                        <td>${data.confidence_index[i]}%</td>
                     </tr>
                 `).join('')}
             </tbody>
