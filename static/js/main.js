@@ -90,99 +90,155 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Vent
-        const windTrace = {
+        const windTrace1 = {
             x: data.timestamps,
-            y: data.wind_speed,
+            y: data.arpege.wind_speed,
             type: 'scatter',
-            name: 'Vitesse du vent',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('windChart', [windTrace], {
+        const windTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.wind_speed,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('windChart', [windTrace1, windTrace2], {
             title: 'Vitesse du vent',
             yaxis: { title: 'km/h' }
         });
 
         // Humidité
-        const humidityTrace = {
+        const humidityTrace1 = {
             x: data.timestamps,
-            y: data.humidity,
+            y: data.arpege.humidity,
             type: 'scatter',
-            name: 'Humidité',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('humidityChart', [humidityTrace], {
+        const humidityTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.humidity,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('humidityChart', [humidityTrace1, humidityTrace2], {
             title: 'Humidité relative',
             yaxis: { title: '%', range: [0, 100] }
         });
 
         // Pression atmosphérique
-        const pressureTrace = {
+        const pressureTrace1 = {
             x: data.timestamps,
-            y: data.pressure,
+            y: data.arpege.pressure,
             type: 'scatter',
-            name: 'Pression',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('pressureChart', [pressureTrace], {
+        const pressureTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.pressure,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('pressureChart', [pressureTrace1, pressureTrace2], {
             title: 'Pression atmosphérique',
             yaxis: { title: 'hPa' }
         });
 
         // Point de rosée
-        const dewpointTrace = {
+        const dewpointTrace1 = {
             x: data.timestamps,
-            y: data.dewpoint,
+            y: data.arpege.dewpoint,
             type: 'scatter',
-            name: 'Point de rosée',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('dewpointChart', [dewpointTrace], {
+        const dewpointTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.dewpoint,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('dewpointChart', [dewpointTrace1, dewpointTrace2], {
             title: 'Point de rosée',
             yaxis: { title: '°C' }
         });
 
         // Radiation
-        const radiationTrace = {
+        const radiationTrace1 = {
             x: data.timestamps,
-            y: data.radiation,
+            y: data.arpege.radiation,
             type: 'scatter',
-            name: 'Radiation',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('radiationChart', [radiationTrace], {
+        const radiationTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.radiation,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('radiationChart', [radiationTrace1, radiationTrace2], {
             title: 'Radiation solaire directe',
             yaxis: { title: 'W/m²' }
         });
 
         // ETP
-        const etpTrace = {
+        const etpTrace1 = {
             x: data.timestamps,
-            y: data.etp,
+            y: data.arpege.etp,
             type: 'scatter',
-            name: 'ETP',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('etpChart', [etpTrace], {
+        const etpTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.etp,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('etpChart', [etpTrace1, etpTrace2], {
             title: 'Évapotranspiration potentielle',
             yaxis: { title: 'mm' }
         });
 
         // VPD
-        const vpdTrace = {
+        const vpdTrace1 = {
             x: data.timestamps,
-            y: data.vpd,
+            y: data.arpege.vpd,
             type: 'scatter',
-            name: 'VPD',
-            line: { color: chartColor }
+            name: 'Arpège',
+            line: { color: '#2196F3' }
         };
         
-        Plotly.newPlot('vpdChart', [vpdTrace], {
+        const vpdTrace2 = {
+            x: data.timestamps,
+            y: data.ecmwf.vpd,
+            type: 'scatter',
+            name: 'ECMWF',
+            line: { color: '#f44336' }
+        };
+        
+        Plotly.newPlot('vpdChart', [vpdTrace1, vpdTrace2], {
             title: 'Déficit de pression de vapeur',
             yaxis: { title: 'kPa' }
         });
@@ -196,34 +252,66 @@ document.addEventListener('DOMContentLoaded', function() {
         table.innerHTML = `
             <thead>
                 <tr>
-                    <th>Date/Heure</th>
-                    <th>Température</th>
-                    <th>Précipitations</th>
-                    <th>Vent</th>
-                    <th>Direction</th>
-                    <th>Humidité</th>
-                    <th>Pression</th>
-                    <th>Point de rosée</th>
-                    <th>Radiation</th>
-                    <th>ETP</th>
-                    <th>VPD</th>
-                    <th>Indice de confiance</th>
+                    <th rowspan="2">Date/Heure</th>
+                    <th colspan="2">Température</th>
+                    <th colspan="2">Précipitations</th>
+                    <th colspan="2">Vent</th>
+                    <th colspan="2">Direction</th>
+                    <th colspan="2">Humidité</th>
+                    <th colspan="2">Pression</th>
+                    <th colspan="2">Point de rosée</th>
+                    <th colspan="2">Radiation</th>
+                    <th colspan="2">ETP</th>
+                    <th colspan="2">VPD</th>
+                    <th rowspan="2">Confiance</th>
+                </tr>
+                <tr>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
+                    <th>Arpège</th>
+                    <th>ECMWF</th>
                 </tr>
             </thead>
             <tbody>
                 ${data.timestamps.map((time, i) => `
                     <tr>
                         <td>${new Date(time).toLocaleString('fr-FR')}</td>
-                        <td>${data.temperatures[i]}°C</td>
-                        <td>${data.precipitation[i]} mm</td>
-                        <td>${data.wind_speed[i]} km/h</td>
-                        <td>${data.wind_direction[i]}</td>
-                        <td>${data.humidity[i]}%</td>
-                        <td>${Math.round(data.pressure[i])} hPa</td>
-                        <td>${Math.round(data.dewpoint[i] * 10) / 10}°C</td>
-                        <td>${Math.round(data.radiation[i])} W/m²</td>
-                        <td>${Math.round(data.etp[i] * 10) / 10} mm</td>
-                        <td>${Math.round(data.vpd[i] * 100) / 100} kPa</td>
+                        <td>${data.arpege.temperatures[i]}°C</td>
+                        <td>${data.ecmwf.temperatures[i]}°C</td>
+                        <td>${data.arpege.precipitation[i]} mm</td>
+                        <td>${data.ecmwf.precipitation[i]} mm</td>
+                        <td>${data.arpege.wind_speed[i]} km/h</td>
+                        <td>${data.ecmwf.wind_speed[i]} km/h</td>
+                        <td>${data.arpege.wind_direction[i]}</td>
+                        <td>${data.ecmwf.wind_direction[i]}</td>
+                        <td>${data.arpege.humidity[i]}%</td>
+                        <td>${data.ecmwf.humidity[i]}%</td>
+                        <td>${Math.round(data.arpege.pressure[i])} hPa</td>
+                        <td>${Math.round(data.ecmwf.pressure[i])} hPa</td>
+                        <td>${Math.round(data.arpege.dewpoint[i] * 10) / 10}°C</td>
+                        <td>${Math.round(data.ecmwf.dewpoint[i] * 10) / 10}°C</td>
+                        <td>${Math.round(data.arpege.radiation[i])} W/m²</td>
+                        <td>${Math.round(data.ecmwf.radiation[i])} W/m²</td>
+                        <td>${Math.round(data.arpege.etp[i] * 10) / 10} mm</td>
+                        <td>${Math.round(data.ecmwf.etp[i] * 10) / 10} mm</td>
+                        <td>${Math.round(data.arpege.vpd[i] * 100) / 100} kPa</td>
+                        <td>${Math.round(data.ecmwf.vpd[i] * 100) / 100} kPa</td>
                         <td>${data.confidence_index[i]}%</td>
                     </tr>
                 `).join('')}
