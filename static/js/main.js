@@ -3,11 +3,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
     const currentTheme = localStorage.getItem('theme');
 
+    // Set dark theme as default
+    const defaultTheme = 'dark';
     if (currentTheme) {
         document.documentElement.setAttribute('data-theme', currentTheme);
         if (currentTheme === 'dark') {
             toggleSwitch.checked = true;
         }
+    } else {
+        document.documentElement.setAttribute('data-theme', defaultTheme);
+        localStorage.setItem('theme', defaultTheme);
+        toggleSwitch.checked = true;
     }
 
     function switchTheme(e) {
@@ -113,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <tbody>
                 ${data.timestamps.map((time, i) => `
                     <tr>
-                        <td>${time}</td>
+                        <td>${new Date(time).toLocaleString('fr-FR')}</td>
                         <td>${data.temperatures[i]}°C</td>
                         <td>${data.precipitation[i]} mm</td>
                         <td>${data.wind_speed[i]} km/h</td>
@@ -132,9 +138,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <ul>
                         ${data.treatment_windows.map(window => `
                             <li>
-                                Le ${new Date(window.start).toLocaleString('fr-FR')}
+                                Le ${new Date(window.start).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
                                 (Humidité: ${window.humidity}%, 
-                                Coucher du soleil: ${new Date(window.sunset).toLocaleString('fr-FR')})
+                                Coucher du soleil: ${new Date(window.sunset).toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })})
                             </li>
                         `).join('')}
                     </ul>
