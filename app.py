@@ -17,11 +17,22 @@ from flask import jsonify
 def get_weather():
     try:
         weather_data = weather_service.get_weather_data()
+        print("Données brutes:", weather_data)  # Debug raw data
+        
         processed_data = data_processor.process_data(weather_data)
-        print("Données météo récupérées:", processed_data)  # Debug log
+        print("Données traitées:", processed_data)  # Debug processed data
+        
+        # Vérification de la structure des données
+        required_fields = ['timestamps', 'temperatures', 'precipitation', 'wind_speed', 'humidity']
+        missing_fields = [field for field in required_fields if field not in processed_data]
+        
+        if missing_fields:
+            raise ValueError(f"Champs manquants dans les données: {missing_fields}")
+            
         return jsonify(processed_data)
     except Exception as e:
-        print("Erreur lors de la récupération des données:", str(e))  # Debug log
+        import traceback
+        print("Erreur détaillée:", traceback.format_exc())  # Debug detailed error
         return jsonify({"error": str(e)}), 500
 
 @app.route('/')

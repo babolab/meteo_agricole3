@@ -88,24 +88,41 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+    // Fonction de validation des données
+    function validateData(data) {
+        const requiredFields = ['timestamps', 'temperatures', 'precipitation', 'wind_speed', 'humidity'];
+        const missingFields = requiredFields.filter(field => !data[field]);
+        
+        if (missingFields.length > 0) {
+            throw new Error(`Données manquantes: ${missingFields.join(', ')}`);
+        }
+        
+        if (!Array.isArray(data.timestamps) || data.timestamps.length === 0) {
+            throw new Error('Aucune donnée temporelle disponible');
+        }
+    }
+
     // Chargement initial des données
     fetch('/api/weather')
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`Erreur HTTP: ${response.status}`);
             }
             return response.json();
         })
         .then(data => {
-            console.log("Données reçues:", data);  // Debug log
+            console.log("Données reçues:", data);
+            
             if (data.error) {
                 throw new Error(data.error);
             }
+            
+            validateData(data);
             updateCharts(data);
         })
         .catch(error => {
-            console.error('Erreur lors du chargement des données:', error);
-            alert('Erreur lors du chargement des données. Veuillez rafraîchir la page.');
+            console.error('Erreur détaillée:', error);
+            alert(`Erreur lors du chargement des données: ${error.message}`);
         });
 
     // Mise à jour automatique toutes les 15 minutes
