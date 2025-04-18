@@ -86,6 +86,31 @@ document.addEventListener('DOMContentLoaded', function() {
                 `).join('')}
             </tbody>
         `;
+
+        // Mise à jour du calendrier des traitements
+        const calendar = document.getElementById('treatmentCalendar');
+        if (data.treatment_windows && data.treatment_windows.length > 0) {
+            calendar.innerHTML = `
+                <div class="alert alert-info">
+                    <h4>Fenêtres de traitement recommandées :</h4>
+                    <ul>
+                        ${data.treatment_windows.map(window => `
+                            <li>
+                                Le ${new Date(window.start).toLocaleString('fr-FR')}
+                                (Humidité: ${window.humidity}%, 
+                                Coucher du soleil: ${new Date(window.sunset).toLocaleString('fr-FR')})
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        } else {
+            calendar.innerHTML = `
+                <div class="alert alert-warning">
+                    Aucune fenêtre de traitement favorable dans les prochaines 24 heures.
+                </div>
+            `;
+        }
     }
 
     // Fonction de validation des données
