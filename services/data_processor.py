@@ -13,16 +13,29 @@ class DataProcessor:
     def process_data(self, weather_data):
         """Traite les données météo pour l'affichage"""
         if weather_data.get("status") == "error":
-            return {
-                "error": True,
-                "message": weather_data.get("message", "Erreur inconnue")
-            }
+            raise ValueError(weather_data.get("message", "Erreur inconnue"))
+            
+        # On utilise les données Arpège par défaut
+        arpege_data = weather_data.get("arpege", {})
+        hourly_data = arpege_data.get("hourly", {})
+        
+        # Extraction des données horaires
+        timestamps = hourly_data.get("time", [])
+        temperatures = hourly_data.get("temperature_2m", [])
+        precipitation = hourly_data.get("precipitation", [])
+        wind_speed = hourly_data.get("wind_speed_10m", [])
+        humidity = hourly_data.get("relative_humidity_2m", [])
+        
+        # Vérification des données
+        if not timestamps or not temperatures:
+            raise ValueError("Données horaires manquantes")
             
         return {
-            "error": False,
-            "arpege": self._format_model_data(weather_data["arpege"]),
-            "ecmwf": self._format_model_data(weather_data["ecmwf"]),
-            "treatment_windows": self._calculate_treatment_windows(weather_data)
+            'timestamps': timestamps,
+            'temperatures': temperatures,
+            'precipitation': precipitation,
+            'wind_speed': wind_speed,
+            'humidity': humidity
         }
     
     def _format_model_data(self, model_data):

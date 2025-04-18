@@ -17,36 +17,11 @@ def format_weather_data(raw_data):
     """Structure les données météo dans le format attendu par le frontend"""
     print("\n=== Formatage des données brutes ===")
     print(f"Type des données brutes: {type(raw_data)}")
-    print(f"Contenu brut: {raw_data}")
     
-    try:
-        formatted = {
-            'timestamps': [],
-            'temperatures': [],
-            'precipitation': [],
-            'wind_speed': [],
-            'humidity': []
-        }
+    if not isinstance(raw_data, dict):
+        raise ValueError(f"Format de données non supporté: {type(raw_data)}")
         
-        if isinstance(raw_data, list):
-            for entry in raw_data:
-                if isinstance(entry, dict):
-                    formatted['timestamps'].append(str(entry.get('datetime', '')))
-                    formatted['temperatures'].append(float(entry.get('temperature', 0)))
-                    formatted['precipitation'].append(float(entry.get('precipitation', 0)))
-                    formatted['wind_speed'].append(float(entry.get('wind_speed', 0)))
-                    formatted['humidity'].append(float(entry.get('humidity', 0)))
-
-            if not formatted['timestamps']:
-                raise ValueError("Aucune donnée n'a pu être extraite")
-                
-            return formatted
-        else:
-            raise ValueError(f"Format de données non supporté: {type(raw_data)}")
-
-    except Exception as e:
-        print(f"Erreur lors du formatage: {str(e)}")
-        raise
+    return raw_data
 
 @app.route('/api/weather')
 def get_weather():
