@@ -16,3 +16,33 @@ h1 {
     color: var(--primary-color);
     font-size: 2rem;
 }
+
+.chart-container {
+    height: 400px;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.nav-tabs .nav-link {
+    color: var(--primary-color);
+}
+
+.nav-tabs .nav-link.active {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+#treatmentCalendar {
+    min-height: 200px;
+    margin: 1rem 0;
+}
+
+.table-responsive {
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}
