@@ -20,72 +20,47 @@ def format_weather_data(raw_data):
     print(f"Contenu brut: {raw_data}")
     
     try:
-        # Si les données sont déjà au bon format
-        if isinstance(raw_data, dict) and all(key in raw_data for key in ['timestamps', 'temperatures', 'precipitation', 'wind_speed', 'humidity']):
-            return raw_data
-
-        # Données de test par défaut
-        if not raw_data:
-            print("Génération de données de test")
-            from datetime import datetime, timedelta
-            base_time = datetime.now()
-            formatted = {
-                'timestamps': [],
-                'temperatures': [],
-                'precipitation': [],
-                'wind_speed': [],
-                'humidity': []
-            }
-            
-            for i in range(24):
-                time = base_time + timedelta(hours=i)
-                formatted['timestamps'].append(time.strftime("%Y-%m-%d %H:%M"))
-                formatted['temperatures'].append(20 + (i % 10))
-                formatted['precipitation'].append(i % 5)
-                formatted['wind_speed'].append(10 + (i % 15))
-                formatted['humidity'].append(60 + (i % 30))
-            
-            return formatted
-
-        # Si les données sont une liste d'objets météo
+        formatted = {
+            'timestamps': [],
+            'temperatures': [],
+            'precipitation': [],
+            'wind_speed': [],
+            'humidity': []
+        }
+        
         if isinstance(raw_data, list):
-            formatted = {
-                'timestamps': [],
-                'temperatures': [],
-                'precipitation': [],
-                'wind_speed': [],
-                'humidity': []
-            }
-            
             for entry in raw_data:
                 if isinstance(entry, dict):
                     formatted['timestamps'].append(str(entry.get('datetime', '')))
-                    formatted['temperatures'].append(float(entry.get('temperature', 20)))
+                    formatted['temperatures'].append(float(entry.get('temperature', 0)))
                     formatted['precipitation'].append(float(entry.get('precipitation', 0)))
-                    formatted['wind_speed'].append(float(entry.get('wind_speed', 10)))
-                    formatted['humidity'].append(float(entry.get('humidity', 60)))
+                    formatted['wind_speed'].append(float(entry.get('wind_speed', 0)))
+                    formatted['humidity'].append(float(entry.get('humidity', 0)))
 
-            if formatted['timestamps']:
-                return formatted
-
-        # Si on arrive ici, on utilise des données de test
-        print("Format non reconnu, utilisation de données de test")
-        return format_weather_data(None)
+            if not formatted['timestamps']:
+                raise ValueError("Aucune donnée n'a pu être extraite")
+                
+            return formatted
+        else:
+            raise ValueError(f"Format de données non supporté: {type(raw_data)}")
 
     except Exception as e:
         print(f"Erreur lors du formatage: {str(e)}")
-        print("Utilisation de données de test suite à l'erreur")
-        return format_weather_data(None)
+        raise
 
 @app.route('/api/weather')
 def get_weather():
     try:
         print("\n=== Début de la récupération des données météo ===")
         weather_data = weather_service.get_weather_data()
+        if not weather_data:
+            raise ValueError("Aucune donnée météo reçue du service")
         print(f"Données brutes reçues: {weather_data}")
 
         print("\n=== Traitement des données ===")
-        processed_data = data_processor.process_data(weather_data) if weather_data else None
+        processed_data = data_processor.process_data(weather_data)
+        if not processed_data:
+            raise ValueError("Erreur lors du traitement des données")
         print(f"Données traitées: {processed_data}")
 
         print("\n=== Formatage des données ===")
