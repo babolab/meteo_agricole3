@@ -38,16 +38,20 @@ class WeatherService:
             # Données Arpège (Météo France)
             arpege_params = params.copy()
             arpege_params["model"] = "meteofrance_arpege_europe"
-            arpege_data = self._fetch_data(arpege_params)
+            arpege_response = self._fetch_data(arpege_params)
             
             # Données ECMWF
             ecmwf_params = params.copy()
             ecmwf_params["model"] = "ecmwf_ifs04"
-            ecmwf_data = self._fetch_data(ecmwf_params)
+            ecmwf_response = self._fetch_data(ecmwf_params)
+            
+            # Vérification que les réponses sont différentes
+            if arpege_response == ecmwf_response:
+                raise Exception("Les données des deux modèles sont identiques, possible erreur API")
             
             return {
-                "arpege": arpege_data,
-                "ecmwf": ecmwf_data,
+                "arpege": arpege_response,
+                "ecmwf": ecmwf_response,
                 "status": "success"
             }
             
@@ -60,7 +64,10 @@ class WeatherService:
     def _fetch_data(self, params):
         """Effectue la requête à l'API Open-Meteo"""
         response = requests.get(f"{self.base_url}/forecast", params=params)
-        if response.status_code == 200:
-            return response.json()
-        else:
+        if response.status_code != 200:
             raise Exception(f"Erreur API: {response.status_code}")
+            
+        data = response.json()
+        print(f"Données reçues pour le modèle {params['model']}:")
+        print(f"Première température: {data.get('hourly', {}).get('temperature_2m', [])[0] if data.get('hourly', {}).get('temperature_2m') else None}")
+        return data
