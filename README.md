@@ -60,6 +60,7 @@ URL de production : https://votre-username.github.io/meteo-agricole/
 
 ## Structure du Projet
 
+
 ```
 meteo-agricole/
 ├── .github/
