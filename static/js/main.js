@@ -346,15 +346,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Fonction de validation des données
     function validateData(data) {
-        const requiredFields = ['timestamps', 'temperatures', 'precipitation', 'wind_speed', 'humidity'];
-        const missingFields = requiredFields.filter(field => !data[field]);
-        
-        if (missingFields.length > 0) {
-            throw new Error(`Données manquantes: ${missingFields.join(', ')}`);
+        // Vérification des champs requis
+        if (!data.timestamps || !data.arpege || !data.ecmwf) {
+            throw new Error('Structure de données invalide');
         }
-        
+
+        // Vérification des données temporelles
         if (!Array.isArray(data.timestamps) || data.timestamps.length === 0) {
             throw new Error('Aucune donnée temporelle disponible');
+        }
+
+        // Vérification des données des modèles
+        const requiredModelFields = [
+            'temperatures', 'precipitation', 'wind_speed', 
+            'wind_direction', 'humidity', 'pressure', 
+            'dewpoint', 'radiation', 'etp', 'vpd'
+        ];
+
+        for (const model of ['arpege', 'ecmwf']) {
+            const missingFields = requiredModelFields.filter(field => !data[model][field]);
+            if (missingFields.length > 0) {
+                throw new Error(`Données manquantes pour le modèle ${model}: ${missingFields.join(', ')}`);
+            }
         }
     }
 
