@@ -5,7 +5,7 @@ on:
     - cron: '0 * * * *'  # Toutes les heures
   workflow_dispatch:  # Permet le déclenchement manuel
   push:
-    branches: [ "main" ]  # Déclenche aussi sur les push pour tester
+    branches: [ "main", "master" ]  # Déclenche sur main et master
 
 permissions:
   contents: write
