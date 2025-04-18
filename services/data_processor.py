@@ -15,50 +15,82 @@ class DataProcessor:
         if weather_data.get("status") == "error":
             raise ValueError(weather_data.get("message", "Erreur inconnue"))
             
-        # On utilise les données Arpège par défaut
-        arpege_data = weather_data.get("arpege", {})
-        hourly_data = arpege_data.get("hourly", {})
+        # Récupération des données des deux modèles
+        arpege_data = weather_data.get("arpege", {}).get("hourly", {})
+        ecmwf_data = weather_data.get("ecmwf", {}).get("hourly", {})
         
-        # Extraction des données horaires
-        timestamps = hourly_data.get("time", [])
-        temperatures = hourly_data.get("temperature_2m", [])
-        precipitation = hourly_data.get("precipitation", [])
-        wind_speed = hourly_data.get("wind_speed_10m", [])
-        wind_direction = hourly_data.get("wind_direction_10m", [])
-        humidity = hourly_data.get("relative_humidity_2m", [])
-        pressure = hourly_data.get("surface_pressure", [])
-        dewpoint = hourly_data.get("dewpoint_2m", [])
-        radiation = hourly_data.get("direct_radiation", [])
-        etp = hourly_data.get("et0_fao_evapotranspiration", [])
+        if not arpege_data or not ecmwf_data:
+            raise ValueError("Données manquantes pour au moins un modèle")
+        
+        # Extraction des données horaires pour les deux modèles
+        timestamps = arpege_data.get("time", [])
+        
+        # Modèle Arpège
+        arpege_temps = arpege_data.get("temperature_2m", [])
+        arpege_precip = arpege_data.get("precipitation", [])
+        arpege_wind = arpege_data.get("wind_speed_10m", [])
+        arpege_wind_dir = arpege_data.get("wind_direction_10m", [])
+        arpege_humidity = arpege_data.get("relative_humidity_2m", [])
+        arpege_pressure = arpege_data.get("surface_pressure", [])
+        arpege_dewpoint = arpege_data.get("dewpoint_2m", [])
+        arpege_radiation = arpege_data.get("direct_radiation", [])
+        arpege_etp = arpege_data.get("et0_fao_evapotranspiration", [])
+        
+        # Modèle ECMWF
+        ecmwf_temps = ecmwf_data.get("temperature_2m", [])
+        ecmwf_precip = ecmwf_data.get("precipitation", [])
+        ecmwf_wind = ecmwf_data.get("wind_speed_10m", [])
+        ecmwf_wind_dir = ecmwf_data.get("wind_direction_10m", [])
+        ecmwf_humidity = ecmwf_data.get("relative_humidity_2m", [])
+        ecmwf_pressure = ecmwf_data.get("surface_pressure", [])
+        ecmwf_dewpoint = ecmwf_data.get("dewpoint_2m", [])
+        ecmwf_radiation = ecmwf_data.get("direct_radiation", [])
+        ecmwf_etp = ecmwf_data.get("et0_fao_evapotranspiration", [])
 
-        # Calcul du VPD (Vapor Pressure Deficit)
-        vpd = self._calculate_vpd(temperatures, humidity)
+        # Calcul du VPD pour les deux modèles
+        arpege_vpd = self._calculate_vpd(arpege_temps, arpege_humidity)
+        ecmwf_vpd = self._calculate_vpd(ecmwf_temps, ecmwf_humidity)
         
         # Vérification des données
-        if not timestamps or not temperatures:
+        if not timestamps or not arpege_temps or not ecmwf_temps:
             raise ValueError("Données horaires manquantes")
             
-        # Calcul des fenêtres de traitement
+        # Calcul des fenêtres de traitement (basé sur Arpège)
         treatment_windows = self._calculate_treatment_windows(weather_data)
             
         # Conversion des directions du vent en notation cardinale
-        wind_directions_cardinal = [self._degrees_to_cardinal(d) if d is not None else 'N/A' for d in wind_direction]
+        arpege_wind_dir_cardinal = [self._degrees_to_cardinal(d) if d is not None else 'N/A' for d in arpege_wind_dir]
+        ecmwf_wind_dir_cardinal = [self._degrees_to_cardinal(d) if d is not None else 'N/A' for d in ecmwf_wind_dir]
 
         # Calcul de l'indice de confiance
         confidence_index = self._calculate_confidence_index(weather_data)
 
         return {
             'timestamps': timestamps,
-            'temperatures': temperatures,
-            'precipitation': precipitation,
-            'wind_speed': wind_speed,
-            'wind_direction': wind_directions_cardinal,
-            'humidity': humidity,
-            'pressure': pressure,
-            'dewpoint': dewpoint,
-            'radiation': radiation,
-            'etp': etp,
-            'vpd': vpd,
+            'arpege': {
+                'temperatures': arpege_temps,
+                'precipitation': arpege_precip,
+                'wind_speed': arpege_wind,
+                'wind_direction': arpege_wind_dir_cardinal,
+                'humidity': arpege_humidity,
+                'pressure': arpege_pressure,
+                'dewpoint': arpege_dewpoint,
+                'radiation': arpege_radiation,
+                'etp': arpege_etp,
+                'vpd': arpege_vpd
+            },
+            'ecmwf': {
+                'temperatures': ecmwf_temps,
+                'precipitation': ecmwf_precip,
+                'wind_speed': ecmwf_wind,
+                'wind_direction': ecmwf_wind_dir_cardinal,
+                'humidity': ecmwf_humidity,
+                'pressure': ecmwf_pressure,
+                'dewpoint': ecmwf_dewpoint,
+                'radiation': ecmwf_radiation,
+                'etp': ecmwf_etp,
+                'vpd': ecmwf_vpd
+            },
             'treatment_windows': treatment_windows,
             'confidence_index': confidence_index
         }
