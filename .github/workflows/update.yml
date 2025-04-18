@@ -1,8 +1,8 @@
 name: Hourly Weather Update
 
 on:
-  schedule:
-    - cron: '0 * * * *'  # Toutes les heures
+  #schedule:
+    #- cron: '0 * * * *'  # Toutes les heures
   workflow_dispatch:  # Permet le déclenchement manuel
   push:
     branches: [ "main", "master" ]  # Déclenche sur main et master
