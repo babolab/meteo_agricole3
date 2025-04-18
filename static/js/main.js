@@ -1,7 +1,43 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const chartColor = '#2196F3';
+    // Theme handling
+    const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+    const currentTheme = localStorage.getItem('theme');
 
+    if (currentTheme) {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            toggleSwitch.checked = true;
+        }
+    }
+
+    function switchTheme(e) {
+        if (e.target.checked) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+        updateChartsTheme();
+    }
+
+    toggleSwitch.addEventListener('change', switchTheme, false);
+
+    // Chart colors based on theme
+    function getChartColor() {
+        return document.documentElement.getAttribute('data-theme') === 'dark' ? '#90caf9' : '#2196F3';
+    }
+    
+    let chartColor = getChartColor();
+
+    function updateChartsTheme() {
+        chartColor = getChartColor();
+        updateCharts(lastData);
+    }
+
+    let lastData = null;
     function updateCharts(data) {
+        lastData = data;
         // Température
         const tempTrace = {
             x: data.timestamps,
