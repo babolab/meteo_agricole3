@@ -13,27 +13,46 @@ data_processor = DataProcessor()
 
 from flask import jsonify
 
+def format_weather_data(raw_data):
+    """Structure les données météo dans le format attendu par le frontend"""
+    try:
+        return {
+            'timestamps': [entry['datetime'] for entry in raw_data],
+            'temperatures': [entry['temperature'] for entry in raw_data],
+            'precipitation': [entry['precipitation'] for entry in raw_data],
+            'wind_speed': [entry['wind_speed'] for entry in raw_data],
+            'humidity': [entry['humidity'] for entry in raw_data]
+        }
+    except KeyError as e:
+        raise ValueError(f"Champ manquant dans les données brutes: {str(e)}")
+
 @app.route('/api/weather')
 def get_weather():
     try:
+        print("Récupération des données météo...")
         weather_data = weather_service.get_weather_data()
-        print("Données brutes:", weather_data)  # Debug raw data
-        
+        print("Données brutes reçues:", weather_data)
+
+        if not weather_data:
+            raise ValueError("Aucune donnée météo reçue")
+
+        print("Traitement des données...")
         processed_data = data_processor.process_data(weather_data)
-        print("Données traitées:", processed_data)  # Debug processed data
-        
-        # Vérification de la structure des données
-        required_fields = ['timestamps', 'temperatures', 'precipitation', 'wind_speed', 'humidity']
-        missing_fields = [field for field in required_fields if field not in processed_data]
-        
-        if missing_fields:
-            raise ValueError(f"Champs manquants dans les données: {missing_fields}")
-            
-        return jsonify(processed_data)
+        print("Données traitées:", processed_data)
+
+        print("Formatage des données...")
+        formatted_data = format_weather_data(processed_data)
+        print("Données formatées:", formatted_data)
+
+        return jsonify(formatted_data)
     except Exception as e:
         import traceback
-        print("Erreur détaillée:", traceback.format_exc())  # Debug detailed error
-        return jsonify({"error": str(e)}), 500
+        error_details = traceback.format_exc()
+        print("Erreur détaillée:", error_details)
+        return jsonify({
+            "error": str(e),
+            "details": error_details
+        }), 500
 
 @app.route('/')
 def index():
