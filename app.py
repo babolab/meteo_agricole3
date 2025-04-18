@@ -15,42 +15,72 @@ from flask import jsonify
 
 def format_weather_data(raw_data):
     """Structure les données météo dans le format attendu par le frontend"""
+    print("Format des données brutes:", type(raw_data))
+    print("Contenu des données brutes:", raw_data)
+    
+    if isinstance(raw_data, dict):
+        # Si les données sont déjà formatées
+        return raw_data
+        
     try:
-        return {
-            'timestamps': [entry['datetime'] for entry in raw_data],
-            'temperatures': [entry['temperature'] for entry in raw_data],
-            'precipitation': [entry['precipitation'] for entry in raw_data],
-            'wind_speed': [entry['wind_speed'] for entry in raw_data],
-            'humidity': [entry['humidity'] for entry in raw_data]
+        formatted = {
+            'timestamps': [],
+            'temperatures': [],
+            'precipitation': [],
+            'wind_speed': [],
+            'humidity': []
         }
-    except KeyError as e:
-        raise ValueError(f"Champ manquant dans les données brutes: {str(e)}")
+        
+        for entry in raw_data:
+            print("Traitement de l'entrée:", entry)
+            formatted['timestamps'].append(entry.get('datetime', ''))
+            formatted['temperatures'].append(entry.get('temperature', 0))
+            formatted['precipitation'].append(entry.get('precipitation', 0))
+            formatted['wind_speed'].append(entry.get('wind_speed', 0))
+            formatted['humidity'].append(entry.get('humidity', 0))
+            
+        print("Données formatées:", formatted)
+        return formatted
+        
+    except Exception as e:
+        print(f"Erreur lors du formatage: {str(e)}")
+        raise ValueError(f"Erreur lors du formatage des données: {str(e)}")
 
 @app.route('/api/weather')
 def get_weather():
     try:
-        print("Récupération des données météo...")
+        print("\n=== Début de la récupération des données météo ===")
         weather_data = weather_service.get_weather_data()
-        print("Données brutes reçues:", weather_data)
-
+        
         if not weather_data:
-            raise ValueError("Aucune donnée météo reçue")
+            raise ValueError("Le service météo n'a retourné aucune donnée")
+        print(f"Données brutes reçues: Type={type(weather_data)}, Contenu={weather_data}")
 
-        print("Traitement des données...")
+        print("\n=== Traitement des données ===")
         processed_data = data_processor.process_data(weather_data)
-        print("Données traitées:", processed_data)
+        if not processed_data:
+            raise ValueError("Le processeur de données n'a retourné aucune donnée")
+        print(f"Données traitées: Type={type(processed_data)}, Contenu={processed_data}")
 
-        print("Formatage des données...")
+        print("\n=== Formatage des données ===")
         formatted_data = format_weather_data(processed_data)
-        print("Données formatées:", formatted_data)
+        if not any(formatted_data.values()):
+            raise ValueError("Les données formatées sont vides")
+        print(f"Données formatées: {formatted_data}")
 
+        print("\n=== Envoi des données ===")
         return jsonify(formatted_data)
+        
     except Exception as e:
         import traceback
         error_details = traceback.format_exc()
-        print("Erreur détaillée:", error_details)
+        print("\n=== ERREUR ===")
+        print(f"Type d'erreur: {type(e).__name__}")
+        print(f"Message d'erreur: {str(e)}")
+        print("Traceback complet:")
+        print(error_details)
         return jsonify({
-            "error": str(e),
+            "error": f"{type(e).__name__}: {str(e)}",
             "details": error_details
         }), 500
 
