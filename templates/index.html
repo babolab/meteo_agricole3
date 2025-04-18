@@ -22,30 +22,9 @@
     <main class="container">
         <div class="row mt-4">
             <div class="col-12">
-                <ul class="nav nav-tabs" id="weatherTabs" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="comparative-tab" data-bs-toggle="tab" 
-                                data-bs-target="#comparative" type="button" role="tab">
-                            Vue comparative
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="arpege-tab" data-bs-toggle="tab"
-                                data-bs-target="#arpege" type="button" role="tab">
-                            Modèle Arpège
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="ecmwf-tab" data-bs-toggle="tab"
-                                data-bs-target="#ecmwf" type="button" role="tab">
-                            Modèle ECMWF
-                        </button>
-                    </li>
-                </ul>
 
-                <div class="tab-content mt-3" id="weatherTabsContent">
-                    <div class="tab-pane fade show active" id="comparative" role="tabpanel">
-                        <div class="row">
+                <div class="mt-3">
+                    <div class="row">
                             <div class="col-12 mb-4">
                                 <div id="tempChart" class="chart-container"></div>
                             </div>
@@ -59,14 +38,6 @@
                                 <div id="humidityChart" class="chart-container"></div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="tab-pane fade" id="arpege" role="tabpanel">
-                        <!-- Contenu spécifique Arpège -->
-                    </div>
-                    
-                    <div class="tab-pane fade" id="ecmwf" role="tabpanel">
-                        <!-- Contenu spécifique ECMWF -->
                     </div>
                 </div>
             </div>
